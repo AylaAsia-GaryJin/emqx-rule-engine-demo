@@ -1,0 +1,15 @@
+version: '3.8'
+services:
+  emqx:
+    image: emqx/emqx-ee:4.3.3
+    container_name: emqx-ee
+    environment:
+      - EMQX_LOG__LEVEL=debug
+      - EMQX_LOADED_PLUGINS= "emqx_recon,emqx_retainer,emqx_management,emqx_dashboard"
+    ports:
+      - "1883:1883"
+      - "8081:8081"
+      - "8083:8083"
+      - "8883:8883"
+      - "18083:18083"
+    restart: always

@@ -1,0 +1,67 @@
+plugins {
+    id 'org.springframework.boot' version '2.3.10.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'java'
+}
+
+group = 'com.ayla'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+ext {
+    set('nexusUsername', System.getenv("NEXUS_USERNAME") == null ? project.property("nexusUsername") : System.getenv("NEXUS_USERNAME"))
+    set('nexusPassword', System.getenv("NEXUS_PASSWORD") == null ? project.property("nexusPassword") : System.getenv("NEXUS_PASSWORD"))
+    set('nexusUrl', System.getenv("NEXUS_SH_URL") == null ? project.property("nexusShUrl") : System.getenv("NEXUS_SH_URL"))
+    set('nexusPathPublic', System.getenv("NEXUS_PATH_PUBLIC") == null ? project.property("nexusPathPublic") : System.getenv("NEXUS_PATH_PUBLIC"))
+}
+
+repositories {
+    maven {
+        credentials {
+            username nexusUsername
+            password nexusPassword
+        }
+        url =  nexusUrl + nexusPathPublic
+    }
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.cloud:spring-cloud-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+    implementation group: 'com.alibaba.cloud', name: 'spring-cloud-starter-alibaba-nacos-config', version: '2.2.1.RELEASE'
+    implementation group: 'com.alibaba.cloud', name: 'spring-cloud-starter-alibaba-nacos-discovery', version: '2.2.1.RELEASE'
+    implementation 'mysql:mysql-connector-java'
+    //spring stream kafka
+    implementation 'org.springframework.cloud:spring-cloud-stream'
+    implementation 'org.springframework.cloud:spring-cloud-starter-stream-kafka'
+    // ali rocketMQ 客户端依赖 https://mvnrepository.com/artifact/com.aliyun.openservices/ons-client
+    implementation group: 'com.aliyun.openservices', name: 'ons-client', version: '1.8.6.Final'
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+    implementation 'org.flywaydb:flyway-core'
+    implementation 'cn.hutool:hutool-all:5.6.5'
+    implementation group: 'com.hivemq', name: 'hivemq-mqtt-client', version: '1.2.2'
+    implementation 'com.aylaasia.corecloud:common:0.0.16'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:Hoxton.SR5"
+    }
+}
+
+test {
+    useJUnitPlatform()
+}

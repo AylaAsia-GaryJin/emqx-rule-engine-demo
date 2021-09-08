@@ -1,0 +1,104 @@
+server:
+  port: 8083
+  servlet:
+    context-path: /${spring.application.name}
+spring:
+  cloud:
+    stream:
+      kafka:
+        binder:
+          brokers: localhost:9092
+        bindings:
+          event-input:
+            destination: event-topic-test
+            content-type: application/json
+            group: event-input-consumer-group-gary
+          connectivity-input:
+            destination: connectivity-topic-test
+            content-type: application/json
+            group: connectivity-input-consumer-group-gary
+          property-input:
+            destination: property-topic-test
+            content-type: application/json
+            group: property-input-consumer-group-gary
+
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:mysql://localhost:3306/cc_rule_engine_demo?serverTimezone=GMT%2B8&useSSL=false&useUnicode=true&characterEncoding=utf8
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      connection-timeout: 30000       # 等待连接池分配连接的最大时长（毫秒），超过这个时长还没可用的连接则发生SQLException， 默认:30秒
+      minimum-idle: 5                 # 最小连接数
+      maximum-pool-size: 20           # 最大连接数
+      auto-commit: true               # 自动提交
+      idle-timeout: 600000            # 连接超时的最大时长（毫秒），超时则被释放（retired），默认:10分钟
+      pool-name: DataSourceHikariCP     # 连接池名字
+      max-lifetime: 1800000           # 连接的生命时长（毫秒），超时而且没被使用则被释放（retired），默认:30分钟 1800000ms
+      connection-test-query: SELECT 1
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+  main:
+    allow-bean-definition-overriding: true
+  flyway:
+    enabled: true
+    clean-disabled: true
+    locations: classpath:db/migration
+    table: flyway_schema_history
+    baseline-on-migrate: true
+    baseline-version: 1
+    validate-on-migrate: true
+    placeholders:
+      flyway-table: ${spring.flyway.table}
+  mvc:
+    throw-exception-if-no-handler-found: true
+  resources:
+    add-mappings: false
+
+
+mqtt:
+  host: the-emqx-host
+  port: 1883
+  qos: 1
+  dashboard-port: 18083
+  dashboard-username: my-username
+  dashboard-password: my-password
+  management_host: "http://${mqtt.host}:${mqtt.dashboard-port}"
+  keepAlive: 60
+  sessionExpiryInterval: 0
+  cleanStart: true
+  client-username: cc-rule-engine
+  client-password: cc-rule-engine-password
+logging:
+  level:
+    root: info
+    org.springframework: ERROR
+    org.springframework.web.filter.CommonsRequestLoggingFilter: DEBUG
+
+# Ali Config
+ali:
+  accessKey: my-access-key
+  secretKey: my-secreat-key
+  rocketMq:
+    aliIotTopic:
+      nameSrvAddr: http://MQ_INST_1430989940359002_BcerHDOs.mq-internet-access.mq-internet.aliyuncs.com:80
+      msgTopic: Iot_Topic_Dev
+      msgGroupId: GID_Tyler_Dev
+      statusTopic: Iot_Topic_Status_Dev
+      statusGroupId: GID_Tyler_Status_Dev
+      eventTopic: Iot_Topic_Event_Dev
+      eventGroupId: GID_Dev_Event
+    aylaIotTopic:
+      nameSrvAddr: http://MQ_INST_1430989940359002_BcerHDOs.mq-internet-access.mq-internet.aliyuncs.com:80
+      msgTopic: test_aylaiot_device_msg
+      msgGroupId: GID_test_aylaiot_device_msg
+      statusTopic: test_aylaiot_device_status
+      statusGroupId: GID_test_aylaiot_device_status
+  iotClient:
+    regionId: cn-shanghai
+    domain: iot.cn-shanghai.aliyuncs.com
+    version: 2018-01-20
