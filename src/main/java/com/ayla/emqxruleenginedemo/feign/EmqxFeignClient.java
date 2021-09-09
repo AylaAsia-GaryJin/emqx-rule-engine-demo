@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
-@FeignClient(url = "http://${mqtt.host}:18081/api/v4", name = "emqx-management", decode404 = true,
+@FeignClient(url = "${mqtt.management_host}/api/v4", name = "cc-ruleengine", decode404 = true,
     configuration = {EmqxCallerInterceptor.class})
 public interface EmqxFeignClient {
     @PostMapping("/rules")
