@@ -67,7 +67,8 @@ mqtt:
   dashboard-port: 18083
   dashboard-username: my-username
   dashboard-password: my-password
-  management_host: "http://${mqtt.host}:${mqtt.dashboard-port}"
+  management-port: 8081
+  management_host: "http://${mqtt.host}:${mqtt.management-port}"
   keepAlive: 60
   sessionExpiryInterval: 0
   cleanStart: true
